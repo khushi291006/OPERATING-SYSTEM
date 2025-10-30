@@ -1,0 +1,66 @@
+Code: #include <stdio.h>
+
+int main() {
+    int n = 3, m = 3;   
+
+       int alloc[3][3] = {
+        {0, 1, 0},
+        {2, 0, 0},
+        {3, 0, 3}
+    };
+
+    int req[3][3] = {
+        {0, 0, 0},
+        {2, 0, 2},
+        {0, 0, 0}
+    };
+
+   
+    int avail[3] = {0, 0, 0};
+
+    int finish[3] = {0};
+    int work[3];
+    for (int j = 0; j < m; j++)
+        work[j] = avail[j];
+
+    int change;
+    do {
+        change = 0;
+        for (int i = 0; i < n; i++) {
+            if (finish[i] == 0) {
+                int can_run = 1;
+                for (int j = 0; j < m; j++) {
+                    if (req[i][j] > work[j]) {
+                        can_run = 0;
+                        break;
+                    }
+                }
+                if (can_run) {
+                    for (int j = 0; j < m; j++)
+                        work[j] += alloc[i][j];
+                    finish[i] = 1;
+                    change = 1;
+                    printf("Process P%d has completed.\n", i);
+                }
+            }
+        }
+    } while (change);
+
+    printf("\nSummary:\n");
+    int deadlock = 0;
+    for (int i = 0; i < n; i++) {
+        if (finish[i])
+            printf("P%d -> Completed\n", i);
+        else {
+            printf("P%d -> Deadlocked\n", i);
+            deadlock = 1;
+        }
+    }
+
+    if (!deadlock)
+        printf("\nNo Deadlock detected.\n");
+    else
+        printf("\nDeadlock detected among the above processes.\n");
+
+    return 0;
+}
